@@ -61,6 +61,17 @@ Version|Date|Comments
 2.1.1.0 | Oct 30, 2018 | <ul><li>Bug fix for editing custom template.</li><li>Bug fix for dynamic loading of video helper library.</li><li>Added support for Page context query variables.</li><li>Added `getUniqueCount` helper function.</li></ul>
 2.1.2.0 | Nov 9, 2018 | <ul><li>Bug fix for IE11.</li><li>Added date query variables.</li><li>Added support for both result source id and query template.</li><li>Added `getUniqueCount` helper function.</li></ul>
 2.2.0.0 | Nov 11, 2018 | <ul><li>Upgraded to SPFx 1.7.0</li><li>Added a TypeScript Azure Function to demonstrate NLP processing on search query</li><li>Removed extension data source. Now we use the default SPFx 'Page Environment' data source.</li></ul>
+2.2.0.1 | Dec 3, 2018 | <ul><li>Remove switch for handlebar helpers, and instead load helpers if used in the template.</li></ul>
+2.3.0.0 | Dec 13, 2018 | <ul><li>Upgraded to @pnp/controls 1.13.0</li><li>Added a result types features</li><li>Fix bug regarding dynamic data source connection</li></ul>
+2.4.0.0 | Jan 03, 2019 | Added custom code renderer support.
+2.4.0.1 | Jan 07, 2019 | Added backwards compability for older sort configurations, and old empty refiner configurations
+
+## Important notice on upgrading the solution from pre v2.2.0.0
+**Due to code restucturing we have hit an edge case which impacts upgrades from previous versions. To solve the issue go to `https://<tenant>.sharepoint.com/sites/<appcatalog>/Lists/ComponentManifests` and remove the entries for SearchBox and Search Results, and then upload the .sppkg for the new release.**
+
+**Next you need to loop over all sites which have the web parts installed, and upgrade the App on those sites. Now the web parts should work on new and existing sites. You may use the PnP command `Update-PnPApp` to update the application.**
+
+**If you have deployed the solution as a tenant wide extension, this should not impact you.**
 
 ## Disclaimer
 **THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
@@ -163,7 +174,8 @@ Web Part Title | Shows a title for this Web Part. Set blank if you don't want a 
 Show blank if no result | Shows nothing if there is no result
 Show result count | Shows the result count and entered keywords  
 Show paging | Indicates whether or not the component should show the paging control at the bottom.
-Result Layouts options | Choose the template to use to display search results. Some layouts are defined by default (List oand Tiles) but you can create your own either by clinkg on the **"Custom"** tile, or **"Edit template"** from an existing chosen template. In custom mode, you can set an external template. It has to be in the same SharePoint tenant. Behind the scenes, the Office UI Fabric core CSS components are used in a isolated way.
+Result Layouts options | Choose the template to use to display search results. Some layouts are defined by default (List oand Tiles) but you can create your own either by clinkg on the **"Custom"** tile, or **"Edit template"** from an existing chosen template. In custom mode, you can set an external template. It has to be in the same SharePoint tenant. Behind the scenes, the Office UI Fabric core CSS components are used in a isolated way. Custom code templates will also automaticly be displayed here upon registration.
+Result types | Allows you to set a custom template at item level according to a specific condition (ex: FileType equals 'pdf').
 Handlebars Helpers | Load [handlebar helpers](https://github.com/helpers/handlebars-helpers) to use in your template. Disable this option will make Web Part loading faster if you don't need them.
 
 ---
@@ -198,6 +210,44 @@ Setting | Description
 `{{getUniqueCount array}}` | Get the unique count of objects in an array. Example: [1,1,1,2,2,4] would return `3`.
 
 Also the [Handlebars helpers](https://github.com/helpers/handlebars-helpers) (188 helpers) are also available. You can also define your own in the *BaseTemplateService.ts* file. See [helper-moment](https://github.com/helpers/helper-moment) for date samples using moment.
+
+##### Use result types
+
+The result types feature is a convenient way to split your templates according to results characteristics instead of making a huge central template with multiple conditions. They can be defined in 'inline' mode or using an external file. You can use the sorting option to determine to order of evaluation for each condition. 
+
+<p align="center">
+  <img width="5700px" src="./images/result_types.png"/>
+</p>
+
+The following operators are supported:
+- Equals
+- Contains
+- StartsWith
+- Greater Or Equal
+- Less Or Equal
+- Less than
+- Greater than
+- Is not null
+
+To use it in your main template, just follow this pattern. This block is not mandatory.
+
+```
+{{#> resultTypes}}
+  {{!-- The block below will be used as default item template if no result types matched --}}
+  <div class="template_result">
+      <!-- Your default template markup -->
+  </div>
+  
+{{/resultTypes}}
+```
+
+Handlebars [partials](https://handlebarsjs.com/partials.html) are used behind the scenes and conditions are built dynamically using a recursive if/else structure.
+
+
+#### Custom code renderers
+You may also define  your own renderers, which most often should be SPFx application customizers. These should use the resultservice to register themselves as renderers, and will upon registration be available as a rendering choice in the "Result Layouts" Section.
+
+More information about custom code renderers may be found in a [seperate sample](../react-search-refiners-renderer), which showcases such a renderer.
 
 #### Query variables
 
@@ -256,11 +306,10 @@ This Web Part illustrates the following concepts on top of the SharePoint Framew
 
 - Build an user friendly search experience on the top of the SharePoint search REST API with paging, refiners and query suggestions using the *@pnp* JavaScript library.
 - Use [Handlebars](https://handlebarsjs.com/) to create templates for search results according to your requirements like the good old display templates. 
-- Using the SPFx [dynamic data feature](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/dynamic-data) to connect Web Parts and/or Extensions.
+- Using the SPFx [dynamic data feature](https://docs.microsoft.com/en-us/sharepoint/dev/spfx/dynamic-data) to connect Web Parts.
 - Using SharePoint taxonomy using JSOM in SPFx (filter translations)
 - Integrate the [@pnp/spfx-property-controls](https://github.com/SharePoint/sp-dev-fx-property-controls) in your solution (*PlaceHolder* control).
 - Integrate multiple Office UI Fabric components (DocumentCard, Panel, GroupedList, ...) to fit with the native Office 365 theme.
 - Use the React container component approach inspiring by the [react-todo-basic sample](https://github.com/SharePoint/sp-dev-fx-webparts/tree/master/samples/react-todo-basic).
-- Use [on-el-resize](https://www.npmjs.com/package/on-el-resize) by [Andrew Koltyakov](https://github.com/koltyakov) to resize iframes dynamically
 
 <img src="https://telemetry.sharepointpnp.com/sp-dev-fx-webparts/samples/react-search-refiners" />

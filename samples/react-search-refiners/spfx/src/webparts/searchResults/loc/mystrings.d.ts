@@ -9,14 +9,10 @@ declare interface ISearchResultsWebPartStrings {
     LoadingMessage: string;
     MaxResultsCount: string;
     NoResultMessage: string;
-    RefinersFieldLabel: string;
     SortableFieldsLabel: string;
-    RefinersFieldDescription: string;
     SortableFieldsDescription: string;
     FilterPanelTitle: string;
-    SortPanelTitle: string;
     FilterResultsButtonLabel: string;
-    SortResultsButtonLabel:string;
     SelectedFiltersLabel: string;
     RemoveAllFiltersLabel: string;
     ShowPagingLabel: string;
@@ -51,9 +47,14 @@ declare interface ISearchResultsWebPartStrings {
     WebPartTitle: string;
     HandlebarsHelpersDescription: string;
     PromotedResultsLabel: string;
-    PanelCloseButtonAria:string;  
+    PanelCloseButtonAria:string;
+    customTemplateFieldsLabel: string;  
+    customTemplateFieldsPanelHeader: string;  
+    customTemplateFieldsConfigureButtonLabel: string;  
+    customTemplateFieldTitleLabel: string;  
+    customTemplateFieldPropertyLabel: string;  
     Sort: {
-        SortList: string;
+        SortPropertyPaneFieldLabel
         SortListDescription: string;
         SortDirectionAscendingLabel:string;
         SortDirectionDescendingLabel:string;
@@ -61,8 +62,43 @@ declare interface ISearchResultsWebPartStrings {
         SortPanelSortFieldLabel:string;
         SortPanelSortFieldAria:string;
         SortPanelSortFieldPlaceHolder:string;
-        SortPanelSortDirectionLabel:string;              
-    }
+        SortPanelSortDirectionLabel:string;         
+        SortableFieldsPropertyPaneField: string;
+        SortableFieldsDescription: string;
+        SortableFieldManagedPropertyField: string;   
+        SortableFieldDisplayValueField: string;
+        EditSortableFieldsLabel: string;
+        EditSortLabel: string;
+    },
+    Refiners: {
+        RefinersFieldLabel: string;
+        RefinersFieldDescription: string;
+        RefinerManagedPropertyField: string;
+        RefinerDisplayValueField: string;
+        EditRefinersLabel: string;
+        EditSortLabel: string;
+    },
+    ResultTypes: {
+        ResultTypeslabel: string;
+        ResultTypesDescription: string;
+        EditResultTypesLabel: string;
+        ConditionPropertyLabel: string;
+        ConditionValueLabel: string;
+        CondtionOperatorValue: string;
+        ExternalUrlLabel: string;
+        EqualOperator: string;
+        ContainsOperator: string;
+        StartsWithOperator: string;
+        NotNullOperator: string;
+        GreaterOrEqualOperator: string;
+        GreaterThanOperator: string;
+        LessOrEqualOperator: string;
+        LessThanOperator: string;
+    },
+    TermNotFound: string;
+    UseDefaultSearchQueryKeywordsFieldLabel: string;
+    DefaultSearchQueryKeywordsFieldLabel: string;
+    DefaultSearchQueryKeywordsFieldDescription: string;
 }
 
 declare module 'SearchResultsWebPartStrings' {
